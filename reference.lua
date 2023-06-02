@@ -63,10 +63,11 @@ local function reorder()
   -- Prioritize missing items and already cooked items
   local priorities = { uncooked, cooked }
   for _, priority in ipairs(priorities) do
-    for item in pairs(priority) do
-      table.insert(chef, priority[item])
-      priority[item] = nil
+    while #priority > 0 do
+      table.insert(chef, priority[#priority])
+      table.remove(priority)
     end
   end
 end
+
 
