@@ -58,22 +58,15 @@ end
 -- Purpose: Adds recipes back to memory, ordered by what we last cooked.
 -- Args: None
 -- Reorder cooked items
-local function reorder(maintain)
-    system.print("Reordering Chef!")
-    -- First Priority Missing Items
-    if #uncooked > 0 then
-        for _, item in ipairs(uncooked) do
-            table.insert(chef, item)
-        end
-        uncooked = {}
+local function reorder()
+  system.print("Reordering Chef!")
+  -- Prioritize missing items and already cooked items
+  local priorities = { uncooked, cooked }
+  for _, priority in ipairs(priorities) do
+    for item in pairs(priority) do
+      table.insert(chef, priority[item])
+      priority[item] = nil
     end
-
-    -- Second Priority Already Cooked Items
-    if #cooked > 0 then
-        for _, item in ipairs(cooked) do
-            table.insert(chef, item)
-        end
-        cooked = {}
-    end
+  end
 end
 
