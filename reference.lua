@@ -34,3 +34,46 @@ function build_recipe_table(filter, maintain)
 
   return recipes
 end
+
+-- Cleanup (updates globals such as the blacklist)
+-- Purpose: Runs an optimization to save memory
+-- Args: None
+local function cleanup()
+  for i = #blacklist, 1, -1 do
+    local blacklisted_item = blacklist[i].id
+
+    -- Remove the blacklisted item from the recipes list
+    for j = #chef, 1, -1 do
+      if chef[j].id == blacklisted_item then
+        table.remove(chef, j)
+      end
+    end
+
+    -- Remove the blacklisted item from the blacklist itself and chef
+    table.remove(blacklist, i)
+  end
+end
+
+-- Reorder (updates globals such as the recipe list)
+-- Purpose: Adds recipes back to memory, ordered by what we last cooked.
+-- Args: None
+-- Reorder cooked items
+local function reorder(maintain)
+    system.print("Reordering Chef!")
+    -- First Priority Missing Items
+    if #uncooked > 0 then
+        for _, item in ipairs(uncooked) do
+            table.insert(chef, item)
+        end
+        uncooked = {}
+    end
+
+    -- Second Priority Already Cooked Items
+    if #cooked > 0 then
+        for _, item in ipairs(cooked) do
+            table.insert(chef, item)
+        end
+        cooked = {}
+    end
+end
+
