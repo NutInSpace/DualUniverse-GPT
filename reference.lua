@@ -123,3 +123,86 @@ end
 
 -- Configuration is done
 unit.exit()
+
+-- Light Sequenceing Patterns (Advanced light configurations)
+-- configureLights (link up to 10 lights to the program board)
+-- Purpose: Configure light R,G,B values for all connected lights.
+-- Args: red (integer) Min: 0, Max: 5
+-- Args: green (integer) Min: 0, Max: 5
+-- Args: blue (integer) Min: 0, Max: 5
+function configureLights(red, green, blue)
+    for _, light in ipairs(lights) do
+        light.setColor(red, green, blue)
+    end
+end
+
+-- setLightsBlink (link up to 10 lights to the program board)
+-- Purpose: Configure light blinking settings for all connected lights.
+function setLightsBlink()
+    for _, light in ipairs(lights) do
+        light.setBlinkingTimeShift(0.25)
+        light.setOffBlinkingDuration(2.5)
+        light.setOnBlinkingDuration(0.50)
+        light.setBlinkingState(true)
+    end
+end
+
+-- setRandomLightColor (link up to 10 lights to the program board)
+-- Purpose: Configure light R,G,B values for a random connected light.
+-- Args: red (integer) Min: 0, Max: 5
+-- Args: green (integer) Min: 0, Max: 5
+-- Args: blue (integer) Min: 0, Max: 5
+function setRandomLightColor(red, green, blue)
+    local randomLight = lights[math.random(#lights)]
+    randomLight.setColor(red, green, blue)
+end
+
+-- sequenceLightPattern (link up to 10 lights to the program board)
+-- Purpose: Sequence a pattern of colors for connected lights.
+-- Args: pattern (table) - An array of color patterns, each containing red, green, and blue values.
+-- Args: interval (number, optional) - The time interval between each color change. Default: 2.5 seconds.
+function sequenceLightPattern(pattern, interval)
+    interval = interval or 2.5 -- Set default interval value if not provided
+    for i, color in ipairs(pattern) do
+        for _, light in ipairs(lights) do
+            light.setColor(color.red, color.green, color.blue)
+        end
+        os.sleep(interval)
+    end
+end
+
+-- changeLightPattern
+-- Purpose: Change the pattern of colors for sequencing the lights.
+-- Args: newPattern (table) - An array of color patterns, each containing red, green, and blue values.
+function changeLightPattern(newPattern)
+    pattern = newPattern
+end
+
+-- addColorToPattern
+-- Purpose: Add a new color pattern to the existing pattern for sequencing the lights.
+-- Args: color (table) - A color pattern containing red, green, and blue values.
+function addColorToPattern(color)
+    table.insert(pattern, color)
+end
+
+-- Example colors
+local red = { red = 5, green = 0, blue = 0 }     -- Red color
+local green = { red = 0, green = 5, blue = 0 }   -- Green color
+local blue = { red = 0, green = 0, blue = 5 }    -- Blue color
+local yellow = { red = 5, green = 5, blue = 0 }  -- Yellow color
+local purple = { red = 5, green = 0, blue = 5 }  -- Purple color
+local cyan = { red = 0, green = 5, blue = 5 }    -- Cyan color
+
+-- Define an initial pattern
+local pattern = { red, green, blue }
+
+-- Change the pattern
+changeLightPattern(pattern)
+
+-- Add new colors to the pattern
+addColorToPattern(yellow)
+addColorToPattern(purple)
+addColorToPattern(cyan)
+
+-- Use the updated pattern in the sequence with default interval
+sequenceLightPattern(pattern)
