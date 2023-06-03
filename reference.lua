@@ -70,4 +70,66 @@ local function reorder()
   end
 end
 
+-- setColor (link up to 10 lights to the program board)
+-- Purpose: configure light R,G,B values.
+-- Args: red (integer) Min: 0, Max: 5
+-- Args: green (integer) Min: 0, Max: 5
+-- Args: blue (integer) Min: 0, Max: 5
+function setColor(red, green, blue)
+    for _, light in ipairs(lights) do
+        light.setColor(red, green, blue)
+    end
+end
+
+-- setBlink (
+-- setup: link up to 10 lights to the program board
+-- Purpose: configure light R,G,B values
+-- Args: red (integer) Min: 0, Max: 5
+-- Args: green (integer) Min: 0, Max: 5
+-- Args: blue (integer) Min: 0, Max: 5
+function setBlink()
+    for _, light in ipairs(lights) do
+        light.setBlinkingTimeShift(0.25)
+        light.setOffBlinkingDuration(2.5)
+        light.setOnBlinkingDuration(0.50)
+        light.setBlinkingState(true)
+    end
+end
+
+-- setColorRand 
+-- setup: link up to 10 lights to the program board
+-- Purpose: configure light R,G,B values
+-- Args: red (integer) Min: 0, Max: 5
+-- Args: green (integer) Min: 0, Max: 5
+-- Args: blue (integer) Min: 0, Max: 5
+function setColorRand(red, green, blue)
+    local randomLight = lights[math.random(#lights)]
+    randomLight.setColor(red, green, blue)
+end
+
+-- redalertmode (example script)
+-- setup: link up to 10 lights to the program board, onTimer("redalert")
+-- Purpose: clears or configures light
+
+local redalert_red = 3 --export: light red
+local redalaert_green = 0 --export: light green
+local redalert_blue = 0 --export: light blue
+
+if not lights[1].isBlinking() then
+    system.print("Setting lights")
+    for _, light in ipairs(lights) do
+        light.activate()
+    end
+    setColor(redalert_red, redalaert_green, redalert_blue)
+    setBlink()
+else
+    system.print("Clearing lights")
+    for _, light in ipairs(lights) do
+        light.setBlinkingState(false)
+        light.deactivate()
+    end
+end
+
+-- Configuration is done
+unit.exit()
 
