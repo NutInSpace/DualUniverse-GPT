@@ -13,10 +13,10 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 class LogParser():
-    def __init__(sell_orders = True, select_item = "Hematite", enable_watch_dog = False):
+    def __init__(sell_orders = True, item_name = "Hematite", enable_watch_dog = False):
         # ARGs / Configuration
         # sell_orders False = use buy_orders instead
-        # select_item = what item we want to inspect
+        # item_name = what item we want to inspect
 
         # Step 0: Download items.json
         url = 'https://raw.githubusercontent.com/NutInSpace/DualUniverse-GPT/main/items.json'
@@ -26,7 +26,7 @@ class LogParser():
         # Step 0: Look Up Item Id
         _select_id = 0 
         for temp in items_data:
-            if temp['displayNameWithSize'] == select_item:
+            if temp['displayNameWithSize'] == item_name:
                 _select_id = temp['id']
                 break
 
@@ -124,7 +124,7 @@ class LogParser():
 
             # Step 4: Write market order data to CSV file
             def write_market_orders_to_csv(market_orders):
-                filename = select_item + '_market_orders.csv'
+                filename = item_name + '_market_orders.csv'
                 if sell_orders:
                     filename = "sell_" + filename
                 else:
