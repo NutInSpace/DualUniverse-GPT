@@ -130,7 +130,7 @@ class LogParser():
                 else:
                     filename = "buy_" + filename
                 # Now in data folder
-                filename = "data\\" + filename
+                filename = "data\\csv\\" + filename
 
                 with open(filename, 'w', newline='') as file:
                     writer = csv.DictWriter(file, fieldnames=market_orders[0].keys())
