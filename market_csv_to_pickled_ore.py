@@ -22,14 +22,16 @@ class DataProcessor:
 
         self.currency_formatter = FuncFormatter(currency)
 
-    def simple_plot(self, buy_orders, sell_orders, num_days=10, bid_min=1, bid_max=1000000, show=True):
+    def simple_plot(self, buy_orders, sell_orders, num_days=30, bid_min=1, bid_max=1000, show=True):
         # Convert 'expiration_date' to datetime type, for testing old data apply an offset
         buy_orders['expiration_date'] = pd.to_datetime(buy_orders['expiration_date']) # + pd.DateOffset(days=30)
         sell_orders['expiration_date'] = pd.to_datetime(sell_orders['expiration_date'])
 
         # First, add a new column 'order_type' to distinguish between buy and sell orders
         buy_orders['order_type'] = 'Buy'
+        buy_orders['buy_quantity'] = abs(buy_orders['buy_quantity'])
         sell_orders['order_type'] = 'Sell'
+        sell_orders['buy_quantity'] = abs(sell_orders['buy_quantity'])
 
         # Combine the two dataframes
         combined = pd.concat([buy_orders, sell_orders])
@@ -41,8 +43,8 @@ class DataProcessor:
         df['unit_price'] = df['unit_price'] / 100
 
         # Filter Stupid Players
-        df = df[df['unit_price'] < 250]
-        df = df[df['unit_price'] > 1]
+        df = df[df['unit_price'] < bid_max]
+        df = df[df['unit_price'] > bid_min]
 
         # Filter expired orders
         current_time = pd.Timestamp.now()
@@ -58,15 +60,29 @@ class DataProcessor:
 
         # Create a barplot
         plt.figure(figsize=(12, 6))
-        ax = sns.barplot(data=df, x='expires_in_days', y='unit_price', hue='order_type')
+        #ax = sns.barplot(data=df, x='expires_in_days', y='unit_price', hue='order_type')
+        ax = sns.barplot(data=df, x='buy_quantity', y='unit_price', hue='order_type')
         ax.yaxis.set_major_formatter(self.currency_formatter)
 
-        date_format = DateFormatter("%d")
-        ax.xaxis.set_major_formatter(date_format)
+        #date_format = DateFormatter("%d")
+        #ax.xaxis.set_major_formatter(date_format)
+
+        # Set x-axis to logarithmic scale
+        sns.set_style("whitegrid")
+        #plt.xscale("log")
 
         # Setting the x-axis format
-        plt.xlabel('Days')
+        plt.xlabel('Volume')
         ax.set_ylabel('Unit Price')
+
+        # Set the Grid
+        ax.grid = True
+
+        # Limiting the number of x-axis labels5
+        x = df['buy_quantity']
+        max_labels = 10  # Maximum number of labels to show
+        label_indices = range(0, len(x), len(x)//max_labels)
+        plt.xticks(label_indices)
 
         # Adding labels and title
         plt.title(f'All Markets : Unit price of Buy and Sell Orders : {self.item_name}')
@@ -84,8 +100,9 @@ def process_item(item, ParseLogs=True, ShowPlots=True):
     data_processor = DataProcessor(item)
 
     # Read Data
-    buy_orders = pd.read_csv(f'data\\csv\\buy_{item}_market_orders.csv')
-    sell_orders = pd.read_csv(f'data\\csv\\sell_{item}_market_orders.csv')
+    temp_name = item.replace(" ", "")
+    buy_orders = pd.read_csv(f'data\\csv\\buy_{temp_name}_market_orders.csv')
+    sell_orders = pd.read_csv(f'data\\csv\\sell_{temp_name}_market_orders.csv')
 
     # Get the ore tier
     ore_tier = ore_tiers.get(item, 1)
@@ -109,7 +126,7 @@ item_names = [
     'Hematite', 'Quartz', 'Coal', 'Bauxite', 
     'Chromite', 'Limestone', 'Malachite',
     'Acanthite', 'Garnierite', 'Petalite', 'Pyrite',
-    'Cobaltite', 'Cryolite', 'Gold_nuggets', 'Kolbeckite',
+    'Cobaltite', 'Cryolite', 'Gold Nuggets', 'Kolbeckite',
     'Columbite', 'Ilmenite', 'Rhodonite', 'Vanadinite'
 ]
 
@@ -118,7 +135,7 @@ ore_tiers = {
     'Hematite': 1, 'Quartz': 1, 'Coal': 1, 'Bauxite': 1,
     'Chromite': 2, 'Limestone': 2, 'Malachite': 2,
     'Acanthite': 3, 'Garnierite': 3, 'Petalite': 3, 'Pyrite': 3,
-    'Cobaltite': 4, 'Cryolite': 4, 'Gold_nuggets': 4, 'Kolbeckite': 4,
+    'Cobaltite': 4, 'Cryolite': 4, 'Gold Nuggets': 4, 'Kolbeckite': 4,
     'Columbite': 5, 'Ilmenite': 5, 'Rhodonite': 5, 'Vanadinite': 5
 }
 
