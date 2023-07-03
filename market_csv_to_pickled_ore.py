@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 from matplotlib.dates import DateFormatter
 from matplotlib.ticker import FuncFormatter
 from mplfinance.original_flavor import candlestick_ohlc
-from data_processing import LogParser
+from data_processing import LogParser # Rename to market_log_to_csv.py to data_processing.py
 
 class DataProcessor:
     def __init__(self, item_name):
