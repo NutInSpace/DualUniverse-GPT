@@ -2,7 +2,7 @@
 
 ![Bauxite](example/img/Bauxite.png)
 ![Coal](example/img/Coal.png)
-![Hemaite](example/img/Hemaite.png)
+![Hematite](example/img/Hematite.png)
 
 # DualUniverse-GPT
 Dual Universe Scripts Written By ChatGPT
