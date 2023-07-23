@@ -1,5 +1,5 @@
 -- OnTimer("scan")
-'''
+```
 local num_steps = 300
 local name = ""
 local last_name = ""
@@ -46,9 +46,9 @@ if scans_completed > player_id then
     online_players = 1
     scans_completed = 0
 end
-'''
+```
 -- onStart()
-'''
+```
 max_online_players = 1
 online_players = 1
 scans_completed = 0
@@ -57,8 +57,9 @@ last_id = player_id
 
 screen.setCenteredText("Scanning...\n\nWelcome "..DUSystem.getPlayerName(player_id))
 unit.setTimer("scan", 0.1)
-'''
+```
 
--- Setup 
+-- Link Setup 
+
 1. Link program board to screen
 2. rename slot to screen.
